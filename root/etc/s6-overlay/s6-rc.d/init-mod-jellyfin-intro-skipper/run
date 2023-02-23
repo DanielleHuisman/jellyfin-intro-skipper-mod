@@ -1,0 +1,15 @@
+#!/usr/bin/with-contenv bash
+
+# TODO: This should probably move to a GitHub Action, because the CLI requires an API token.
+
+# Install GitHub CLI
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+&& sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+&& sudo apt update \
+&& sudo apt install gh -y
+
+# Download Intro Skipper
+gh -R ConfusedPolarBear/intro-skipper run download $(gh -R ConfusedPolarBear/intro-skipper run list --json name,number,databaseId --jq '[.[]|select(.name=="Publish container")][0].databaseId')
+tar -xvf jellyfin-web*/dist.tar.gz -C /usr/share/jellyfin/web
+# TODO: check if the dist directory needs to be stripped from the tar output with --strip-components=1
